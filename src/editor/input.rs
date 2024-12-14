@@ -10,9 +10,18 @@ pub fn handle_keypress(editor: &mut TextEditor, key: KeyCode) {
             }
         }
         KeyCode::Backspace => {
-            if editor.cursor_y < editor.text.len() && editor.cursor_x > 0 {
-                editor.text[editor.cursor_y].remove(editor.cursor_x - 1);
-                editor.cursor_x -= 1;
+            if editor.cursor_y < editor.text.len() {
+                if editor.text[editor.cursor_y].is_empty() {
+                    // if the line is empty, remove it
+                    if editor.cursor_y > 0 {
+                        editor.text.remove(editor.cursor_y);
+                        editor.cursor_y -= 1;
+                        editor.cursor_x = editor.text[editor.cursor_y].len();
+                    }
+                } else if editor.cursor_x > 0 {
+                    editor.text[editor.cursor_y].remove(editor.cursor_x - 1);
+                    editor.cursor_x -= 1;
+                }
             }
         }
         KeyCode::Enter => {
@@ -26,11 +35,19 @@ pub fn handle_keypress(editor: &mut TextEditor, key: KeyCode) {
         KeyCode::Left => {
             if editor.cursor_x > 0 {
                 editor.cursor_x -= 1;
+            } else if editor.cursor_y > 0 {
+                editor.cursor_y -= 1;
+                editor.cursor_x = editor.text[editor.cursor_y].len();
             }
         }
         KeyCode::Right => {
-            if editor.cursor_y < editor.text.len() && editor.cursor_x < editor.text[editor.cursor_y].len() {
-                editor.cursor_x += 1;
+            if editor.cursor_y < editor.text.len() {
+                if editor.cursor_x < editor.text[editor.cursor_y].len() {
+                    editor.cursor_x += 1;
+                } else if editor.cursor_y + 1 < editor.text.len() {
+                    editor.cursor_y += 1;
+                    editor.cursor_x = 0;
+                }
             }
         }
         KeyCode::Up => {

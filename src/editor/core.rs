@@ -8,6 +8,7 @@ pub struct TextEditor {
     pub cursor_x: usize,
     pub cursor_y: usize,
     pub status_message: String,
+    pub file_path: String,
 }
 
 impl TextEditor {
@@ -16,25 +17,27 @@ impl TextEditor {
             text: vec![String::new()],
             cursor_x: 0,
             cursor_y: 0,
-            status_message: "Welcome to vimless! Press 'q' to quit.".to_string(),
+            status_message: "Welcome to vimless! Press Ctrl+Q to quit.".to_string(),
+            file_path: String::new(),
         }
     }
 
     pub fn load_file(&mut self, file_path: &str) {
         self.text = file::load_file(file_path);
+        self.file_path = file_path.to_string();
     }
 
-    pub fn save_file(&self, file_path: &str) {
-        file::save_file(file_path, &self.text);
+    pub fn save_file(&self) {
+        file::save_file(&self.file_path, &self.text);
     }
 
-    pub fn render(&self) -> crossterm::Result<()> {
-      render::render_text(&self.text)?; 
-      render::render_status_bar(self.cursor_x, self.cursor_y)?; 
-      render::move_cursor(self.cursor_x, self.cursor_y)?; 
-      execute!(io::stdout(), cursor::Show)?;
-      Ok(())
-  }
+    pub fn render(&self) -> Result<()> {
+        render::render_text(&self.text, &self.file_path)?;
+        render::render_status_bar(self.cursor_x, self.cursor_y)?;
+        render::move_cursor(self.cursor_x, self.cursor_y)?;
+        execute!(io::stdout(), cursor::Show)?;
+        Ok(())
+    }
 
     pub fn handle_input(&mut self, key: KeyCode) {
         input::handle_keypress(self, key);

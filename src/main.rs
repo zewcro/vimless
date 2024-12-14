@@ -22,7 +22,7 @@ fn main() -> Result<()> {
                     match (key_event.code, key_event.modifiers) {
                         (KeyCode::Char('x'), KeyModifiers::CONTROL) => break,
                         (KeyCode::Char('s'), KeyModifiers::CONTROL) => {
-                            editor.save_file("example.txt");
+                            editor.save_file();
                         }
                         _ => {
                             editor.handle_input(key_event.code);
