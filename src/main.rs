@@ -4,27 +4,28 @@ use crossterm::{cursor, execute, terminal, Result};
 use std::io::{self};
 
 fn main() -> Result<()> {
-    let mut editor = editor::TextEditor::new();
+    let mut editor = editor::core::TextEditor::new();
 
     editor.load_file("example.txt");
 
-    terminal::enable_raw_mode()?;
-    execute!(io::stdout(), cursor::Hide)?;
+    terminal::enable_raw_mode()?; // Active le mode "raw"
+    execute!(io::stdout(), cursor::Hide)?; // Masque le curseur
 
     loop {
-        editor.render()?;
+        editor.render()?; // Rend l'écran
+
         if let crossterm::event::Event::Key(event) = crossterm::event::read()? {
-            if let crossterm::event::KeyCode::Char('q') = event.code {
-                break; // Exit the program
+            match event.code {
+                crossterm::event::KeyCode::Char('q') => break, // Quitte l'application
+                crossterm::event::KeyCode::Char('s') => {
+                    editor.save_file("example.txt"); // Sauvegarde le fichier
+                }
+                _ => editor.handle_input(event.code), // Gère les autres entrées utilisateur
             }
-            if let crossterm::event::KeyCode::Char('s') = event.code {
-                editor.save_file("example.txt"); 
-            }
-            editor.handle_input(event.code);
         }
     }
 
     execute!(io::stdout(), cursor::Show)?;
-    terminal::disable_raw_mode()?;
+    terminal::disable_raw_mode()?; 
     Ok(())
 }

@@ -1,0 +1,44 @@
+# Compiled source
+/target/
+
+# Build artifacts
+**/*.rs.bk
+
+# Binaries
+/*.exe
+/*.dll
+/*.so
+/*.dylib
+/*.bin
+
+# Test output
+/tests-output/
+
+# Cargo files
+Cargo.lock
+.cargo/
+
+# IDE specific files
+.idea/
+.vscode/
+*.code-workspace
+
+# Mac OS
+.DS_Store
+
+# Windows
+Thumbs.db
+desktop.ini
+
+# Linux
+*~
+
+# Logs and temporary files
+*.log
+*.tmp
+*.swp
+*.bak
+
+# Coverage output
+/coverage/
+*.profraw
