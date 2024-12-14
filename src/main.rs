@@ -7,7 +7,7 @@ use crossterm::event::{self, Event, KeyCode, KeyEventKind, KeyModifiers};
 fn main() -> Result<()> {
     let mut editor = editor::core::TextEditor::new();
 
-    editor.load_file("example.txt");
+    editor.load_file("test.py");
 
     terminal::enable_raw_mode()?; 
     execute!(io::stdout(), cursor::Hide)?; 

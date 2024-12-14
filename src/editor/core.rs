@@ -24,21 +24,25 @@ impl TextEditor {
 
     pub fn load_file(&mut self, file_path: &str) {
         self.text = file::load_file(file_path);
-        self.file_path = file_path.to_string();
+        self.file_path = std::fs::canonicalize(file_path)
+            .expect("Unable to get full path")
+            .to_str()
+            .unwrap()
+            .to_string();
     }
 
     pub fn save_file(&self) {
         file::save_file(&self.file_path, &self.text);
     }
 
-    pub fn render(&self) -> Result<()> {
-        render::render_text(&self.text, &self.file_path)?;
-        render::render_status_bar(self.cursor_x, self.cursor_y)?;
-        render::move_cursor(self.cursor_x, self.cursor_y)?;
-        execute!(io::stdout(), cursor::Show)?;
-        Ok(())
-    }
-
+        pub fn render(&self) -> crossterm::Result<()> {
+            render::render_text(&self.text, &self.file_path)?; 
+            render::render_status_bar(self.cursor_x, self.cursor_y)?; 
+            render::move_cursor(self.cursor_x, self.cursor_y)?; 
+            execute!(io::stdout(), cursor::Show)?;
+            Ok(())
+        }
+        
     pub fn handle_input(&mut self, key: KeyCode) {
         input::handle_keypress(self, key);
     }
