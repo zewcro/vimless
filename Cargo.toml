@@ -1,0 +1,9 @@
+[package]
+name = "vimless"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+crossterm = "0.26" 
+serde = { version = "1.0", features = ["derive"] } 
+serde_json = "1.0" # Si besoin de config JSON
