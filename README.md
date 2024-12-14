@@ -27,7 +27,7 @@ Vimless is a minimalist console-based text editor inspired by **nano**. It is de
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/your-username/vimless.git
+   git clone https://github.com/zewcro/vimless.git
    cd vimless
    ```
 

@@ -2,29 +2,37 @@ mod editor;
 
 use crossterm::{cursor, execute, terminal, Result};
 use std::io::{self};
+use crossterm::event::{self, Event, KeyCode, KeyEventKind, KeyModifiers};
 
 fn main() -> Result<()> {
     let mut editor = editor::core::TextEditor::new();
 
     editor.load_file("example.txt");
 
-    terminal::enable_raw_mode()?; // Active le mode "raw"
-    execute!(io::stdout(), cursor::Hide)?; // Masque le curseur
+    terminal::enable_raw_mode()?; 
+    execute!(io::stdout(), cursor::Hide)?; 
+
+    editor.render()?;
+
 
     loop {
-        editor.render()?; // Rend l'écran
-
-        if let crossterm::event::Event::Key(event) = crossterm::event::read()? {
-            match event.code {
-                crossterm::event::KeyCode::Char('q') => break, // Quitte l'application
-                crossterm::event::KeyCode::Char('s') => {
-                    editor.save_file("example.txt"); // Sauvegarde le fichier
+        if event::poll(std::time::Duration::from_millis(100))? {
+            if let Event::Key(key_event) = event::read()? {
+                if key_event.kind == KeyEventKind::Press {
+                    match (key_event.code, key_event.modifiers) {
+                        (KeyCode::Char('x'), KeyModifiers::CONTROL) => break,
+                        (KeyCode::Char('s'), KeyModifiers::CONTROL) => {
+                            editor.save_file("example.txt");
+                        }
+                        _ => {
+                            editor.handle_input(key_event.code);
+                            editor.render()?;
+                        }
+                    }
                 }
-                _ => editor.handle_input(event.code), // Gère les autres entrées utilisateur
             }
         }
     }
-
     execute!(io::stdout(), cursor::Show)?;
     terminal::disable_raw_mode()?; 
     Ok(())

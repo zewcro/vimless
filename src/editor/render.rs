@@ -14,9 +14,10 @@ pub fn render_text(text: &Vec<String>) -> Result<()> {
   )?;
 
   for line in text {
-      println!("{}", line); 
+      write!(io::stdout(), "{}\r\n", line)?;
   }
 
+  io::stdout().flush()?;
   Ok(())
 }
 
